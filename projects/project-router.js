@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Projects = require('./project-model.js');
+const Resources = require('../resources/resource-model.js');
 
 router.get('/', async (req, res) => {
   try {
@@ -32,6 +33,25 @@ router.post('/', async (req, res) => {
   }
   catch (err) {
     res.status(500).json({ error: 'Failed to add project.', msg: err.message });
+  }
+});
+
+router.get('/:id/resources', async (req, res) => {
+  try {
+    res.status(200).json(await Resources.getProjectReqs(req.params.id));
+  }
+  catch (err) {
+    res.status(500).json({ error: 'Failed to get resources for a project.', msg: err.message });
+  }
+});
+
+router.post('/:id/resources', async (req, res) => {
+  try {
+    req.body.project_id = req.params.id;
+    res.status(200).json(await Resources.addResourceToProject(req.body));
+  }
+  catch (err) {
+    res.status(500).json({ error: 'Failed to add resource to project.', msg: err.message });
   }
 });
 
